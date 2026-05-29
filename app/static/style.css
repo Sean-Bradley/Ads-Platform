@@ -2,6 +2,9 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     background: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
@@ -57,4 +60,41 @@ textarea {
 button {
     padding: 0.75rem 1rem;
     cursor: pointer;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.actions a {
+    text-decoration: none;
+    color: #007bff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: 1px solid #808080;
+    transition: background 0.2s;
+}
+
+.actions a:hover {
+    background: #808080;
+}
+
+footer {
+    background: #222;
+    color: white;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+footer a {
+    color: white;
+}
+
+footer p {
+    margin: 0.5rem 0;
 }
