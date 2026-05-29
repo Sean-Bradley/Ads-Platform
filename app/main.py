@@ -1,6 +1,6 @@
 from pathlib import Path
 from fastapi import FastAPI, Request, Form, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -16,8 +16,6 @@ static_dir = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
 templates = Jinja2Templates(directory="app/templates")
-
-# Dependency
 
 
 def get_db():
@@ -41,6 +39,7 @@ def home(request: Request, db: Session = Depends(get_db)):
             "ads": ads,
         },
     )
+
 
 @app.get("/create", response_class=HTMLResponse)
 def create_page(request: Request):
@@ -106,6 +105,7 @@ def edit_ad(
 
     return RedirectResponse(url="/", status_code=303)
 
+
 @app.get("/delete/{ad_id}")
 def delete_ad(
     ad_id: int,
@@ -114,3 +114,8 @@ def delete_ad(
     crud.delete_ad(db, ad_id)
 
     return RedirectResponse(url="/", status_code=303)
+
+
+@app.get("/favicon.ico")
+async def favicon():
+    return FileResponse(str(static_dir / "favicon.ico"), media_type="image/x-icon")
