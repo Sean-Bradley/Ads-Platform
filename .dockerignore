@@ -10,3 +10,4 @@ __pycache__
 *.tfstate
 *.tfstate.backup
 /aws/
+terraform.tfvars
