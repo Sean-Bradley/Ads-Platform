@@ -8,6 +8,9 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import crud
 
+from app.config import APP_VERSION
+templates.env.globals["APP_VERSION"] = APP_VERSION
+
 #from app.config import DATABASE_URL
 
 Base.metadata.create_all(bind=engine)

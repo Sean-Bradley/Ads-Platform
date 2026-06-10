@@ -11,3 +11,5 @@ APP_PORT = int(os.getenv("APP_PORT", 8000))
 DEBUG = APP_ENV == "development"
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./ads.db")
+
+APP_VERSION = os.getenv("APP_VERSION", "development")
