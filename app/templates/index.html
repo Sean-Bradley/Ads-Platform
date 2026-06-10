@@ -19,7 +19,9 @@
 
         <div class="actions">
             <a href="/edit/{{ ad.id }}">Edit</a>
-            <a href="/delete/{{ ad.id }}" onclick="return confirm('Are you sure you want to delete this ad?');">Delete</a>
+            <form action="/delete/{{ ad.id }}" method="post" onsubmit="return confirm('Are you sure you want to delete this ad?');" style="display: inline;">
+                <button type="submit">Delete</button>
+            </form>
         </div>
     </div>
     {% endfor %}
