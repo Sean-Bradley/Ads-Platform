@@ -42,12 +42,13 @@ def update_ad(db: Session, ad_id: int, title: str, description: str, price: str)
 
 
 def delete_ad(db: Session, ad_id: int):
-    ad = get_ad(db, ad_id)
+    #ad = get_ad(db, ad_id)
 
-    if not ad:
-        return None
+    #if not ad:
+    #    return None
 
-    db.delete(ad)
-    db.commit()
+    #db.delete(ad)
+    #db.commit()
 
-    return ad
+    #return ad
+    return None
