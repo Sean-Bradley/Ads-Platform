@@ -13,6 +13,7 @@ from . import crud
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+#app = FastAPI(docs_url=None, redoc_url=None) # use if you want to disable /docs and /redoc urls
 
 static_dir = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
@@ -109,7 +110,7 @@ def edit_ad(
     return RedirectResponse(url="/", status_code=303)
 
 
-@app.get("/delete/{ad_id}")
+@app.post("/delete/{ad_id}")
 def delete_ad(
     ad_id: int,
     db: Session = Depends(get_db),

@@ -50,4 +50,4 @@ def delete_ad(db: Session, ad_id: int):
     db.delete(ad)
     db.commit()
 
-    return ad
+    return ad    
