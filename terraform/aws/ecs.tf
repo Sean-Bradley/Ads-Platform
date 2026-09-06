@@ -1,0 +1,45 @@
+resource "aws_ecs_cluster" "main" {
+  name = "ads-platform-cluster"
+}
+
+resource "aws_ecs_task_definition" "app" {
+  family                   = "ads-platform-task"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+
+  cpu    = 256
+  memory = 512
+
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name  = "ads-platform"
+      image = "051131629218.dkr.ecr.ca-central-1.amazonaws.com/ads-platform:latest"
+
+      essential = true
+
+      portMappings = [
+        {
+          containerPort = 8000
+          hostPort      = 8000
+        }
+      ]
+
+      environment = [
+        {
+          name  = "APP_ENV"
+          value = "production"
+        },
+        {
+          name  = "APP_HOST"
+          value = "0.0.0.0"
+        },
+        {
+          name  = "APP_PORT"
+          value = "8000"
+        }
+      ]
+    }
+  ])
+}
