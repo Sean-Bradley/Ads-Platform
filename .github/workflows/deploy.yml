@@ -1,0 +1,93 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ca-canada-1
+  ECR_REPOSITORY: ads-platform
+  ECS_CLUSTER: ads-platform-cluster
+  ECS_SERVICE: ads-platform-service
+  ECS_TASK_DEFINITION: ads-platform-task
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg APP_VERSION=${GITHUB_SHA::7} \
+            -t $ECR_REPOSITORY:${{ github.sha }} .
+
+      - name: Tag Docker image
+        run: |
+          docker tag $ECR_REPOSITORY:${{ github.sha }} \
+          ${{ secrets.ECR_REGISTRY }}/$ECR_REPOSITORY:${{ github.sha }}
+
+      - name: Push Docker image to ECR
+        run: |
+          docker push \
+          ${{ secrets.ECR_REGISTRY }}/$ECR_REPOSITORY:${{ github.sha }}
+
+      - name: Download current ECS task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition $ECS_TASK_DEFINITION \
+            --query taskDefinition \
+            > task-definition.json
+
+      - name: Update ECS task definition image
+        run: |
+          cat task-definition.json | jq \
+          --arg IMAGE "${{ secrets.ECR_REGISTRY }}/$ECR_REPOSITORY:${{ github.sha }}" \
+          '.containerDefinitions[0].image = $IMAGE
+          | del(
+              .taskDefinitionArn,
+              .revision,
+              .status,
+              .requiresAttributes,
+              .compatibilities,
+              .registeredAt,
+              .registeredBy
+            )' \
+          > new-task-definition.json
+
+      - name: Register new ECS task definition
+        run: |
+          aws ecs register-task-definition \
+            --cli-input-json file://new-task-definition.json
+
+      - name: Get latest task definition revision
+        id: task-def
+        run: |
+          REVISION=$(aws ecs describe-task-definition \
+            --task-definition $ECS_TASK_DEFINITION \
+            --query 'taskDefinition.revision' \
+            --output text)
+
+          echo "revision=$REVISION" >> $GITHUB_OUTPUT
+
+      - name: Deploy ECS service
+        run: |
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service $ECS_SERVICE \
+            --task-definition ${ECS_TASK_DEFINITION}:${{ steps.task-def.outputs.revision }} \
+            --force-new-deployment
