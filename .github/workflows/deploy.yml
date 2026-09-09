@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  AWS_REGION: ca-canada-1
+  AWS_REGION: ca-central-1
   ECR_REPOSITORY: ads-platform
   ECS_CLUSTER: ads-platform-cluster
   ECS_SERVICE: ads-platform-service
