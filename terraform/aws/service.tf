@@ -7,6 +7,12 @@ resource "aws_ecs_service" "app" {
 
   launch_type = "FARGATE"
 
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
+
   network_configuration {
     subnets = [
       aws_subnet.public_a.id,

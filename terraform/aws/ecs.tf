@@ -1,3 +1,8 @@
+resource "aws_cloudwatch_log_group" "ecs" {
+  name              = "/ecs/ads-platform"
+  retention_in_days = 7
+}
+
 resource "aws_ecs_cluster" "main" {
   name = "ads-platform-cluster"
 }
@@ -18,6 +23,15 @@ resource "aws_ecs_task_definition" "app" {
       image = "051131629218.dkr.ecr.ca-central-1.amazonaws.com/ads-platform:latest"
 
       essential = true
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+          "awslogs-region"        = "ca-central-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
 
       portMappings = [
         {
