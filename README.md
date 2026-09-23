@@ -1,5 +1,7 @@
 # Ads Platform
 
+Course Information : [https://sbcode.net/iac/](https://sbcode.net/iac/)
+
 A minimal python application for use while learning all about
 
 * AWS
@@ -49,5 +51,3 @@ A minimal python application for use while learning all about
 * Rolling Deployments
 * Infrastructure Security
 * Production Debugging
-
-For Course Content Visit : [https://sbcode.net/iac/](https://sbcode.net/iac/)
