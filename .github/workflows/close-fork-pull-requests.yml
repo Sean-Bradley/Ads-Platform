@@ -19,7 +19,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const message = "The https://github.com/Sean-Bradley/Ads-Platform repository is provided as a starting point for the course. Please merge changes into your own fork rather than submitting a pull request here. I apologise for not mentioning this in the videos.";
+            const message = "Hi, the https://github.com/Sean-Bradley/Ads-Platform repository is provided as a starting point for the course. Please merge changes into your own fork rather than submitting a pull request here. I apologise for not mentioning this more clearer in the videos. Regards, Sean";
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
