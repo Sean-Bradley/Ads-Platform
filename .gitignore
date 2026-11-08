@@ -4,3 +4,7 @@ __pycache__/
 *.db
 .env
 .vscode/
+.terraform/
+*.tfstate
+*.tfstate.backup
+/aws/
